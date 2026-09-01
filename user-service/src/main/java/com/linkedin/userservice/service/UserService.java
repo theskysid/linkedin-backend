@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ public class UserService {
    private static final String CONNECTION_REQUESTED_TOPIC = "connection.requested";
    private static final String CONNECTION_ACCEPTED_TOPIC = "connection.accepted";
    private static final String USER_UPDATED_TOPIC = "user.updated";
+   private final S3Service s3Service;
 
    public UserResponse getUserProfile(String userId){
       User user = userRepository.findById(userId)
@@ -131,6 +133,19 @@ public class UserService {
 
       log.info("user.updated for user id {} from id {}", savedUser.getId(), userId);
 
+      return mapToResponse(savedUser);
+   }
+
+   public UserResponse uploadProfilePhoto(String userId, MultipartFile file){
+      User user  = userRepository.findById(userId)
+              .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
+
+      String photoUrl = s3Service.uploadFile(file, "profiles/" + userId + "/avatar");
+
+      user.setProfilePhotoUrl(photoUrl);
+      User savedUser = userRepository.save(user);
+
+      log.info("Profile photo uploaded for user id {}", savedUser.getId());
       return mapToResponse(savedUser);
    }
 }

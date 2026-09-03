@@ -94,7 +94,7 @@ public class UserController {
 
    //get all the connections
    @GetMapping("/{userId}/connections")
-   public ResponseEntity<List<UserResponse>> getConnection(@PathVariable String userId){
+   public ResponseEntity<List<UserResponse>> getConnections(@PathVariable String userId){
       return ResponseEntity.ok(userService.getConnections(userId));
    }
 }

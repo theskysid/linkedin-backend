@@ -1,14 +1,13 @@
 package com.linkedin.postservice.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-
 import java.util.UUID;
 
 @Service
@@ -28,7 +27,7 @@ public class S3Service {
       try {
          String key = keyPrefix + "/" +  UUID.randomUUID() + "_" +  file.getOriginalFilename();
 
-         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+         PutObjectRequest request = PutObjectRequest.builder()
                  .bucket(bucketName)
                  .key(key)
                  .contentType(file.getContentType())
@@ -40,9 +39,10 @@ public class S3Service {
 
          log.info("File Uploaded Successfully to s3: {} " + url);
 
+         return url;
       } catch (Exception e) {
 
-         throw new RuntimeException("Failed to upload file to s3", e.getMessage());
+         throw new RuntimeException("Failed to upload file to s3", e);
       }
    }
 

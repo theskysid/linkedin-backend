@@ -52,17 +52,15 @@ public class PostService {
 
       log.info("Creating post with authorId: {}", authorId);
 
-      Post post = Post.builder()
-              .authorId(authorId)
-              .content(content)
-              .imageUrl(
-                      ()-> {
-                         if(image != null && !image.isEmpty()) {
-                            return s3Service.uploadFile(image, "posts/" + authorId);
-                         }
-                      }
-              )
-              .build();
+      Post post = new Post();
+      post.setAuthorId(authorId);
+      post.setContent(content);
+
+      if(image != null &&  !image.isEmpty()) {
+         String imageUrl = s3Service.uploadFile(image, "posts/" + authorId);
+         post.setImageUrl(imageUrl);
+      }
+
 
       Post savedPost =  postRepository.save(post);
 

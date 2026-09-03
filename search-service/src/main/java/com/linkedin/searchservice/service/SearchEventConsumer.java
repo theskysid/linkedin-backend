@@ -37,7 +37,7 @@ public class SearchEventConsumer {
          document.setFirstName((String) payload.get("firstName"));
          document.setLastName((String) payload.get("lastName"));
          document.setEmail((String) payload.get("email"));
-         document.setHeadline((String) payload.get("headline"));
+         document.setHeadline((String) payload.get("headLine"));
          document.setLocation( (String) payload.get("location"));
 
          userSearchRepository.save(document);
@@ -61,7 +61,7 @@ public class SearchEventConsumer {
          userSearchRepository.findById(userId).ifPresent(doc -> {
             doc.setFirstName((String) payload.get("firstName"));
             doc.setLastName((String) payload.get("lastName"));
-            doc.setHeadline((String) payload.get("headline"));
+            doc.setHeadline((String) payload.get("headLine"));
             doc.setLocation((String) payload.get("location"));
             if (payload.get("skills") != null) {
                doc.setSkills((List<String>) payload.get("skills"));
